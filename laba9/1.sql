@@ -1,0 +1,89 @@
+
+
+
+
+--DROP DATABASE Decanat;
+--CREATE DATABASE Decanat;
+
+CREATE TABLE Specialties 
+(
+    ID int IDENTITY(1,1) PRIMARY KEY, --ID
+	specialty_code varchar(255)  NOT NULL, --шифр (прим. 09.03.02)
+	name varchar(255) NOT NULL,			--наименование
+	form_of_learning varchar(255) check(form_of_learning = 'очная' or form_of_learning = 'заочная' or form_of_learning = 'очно заочная' ) NOT NULL, --форма обучения
+	lvl varchar(255) check(lvl = 'бакалавриат' or lvl = 'специалитет' or lvl = 'магистратура' or lvl = 'аспирантура' ) NOT NULL, --уровень бакалавриат/специалитет/магистратура/аспирантура
+	duration_of_training int NOT NULL, --продолжительность обучения (в семестрах)
+	descript varchar(255) NOT NULL --описание
+);
+
+CREATE TABLE Groups
+(
+	ID int IDENTITY(1,1),
+    CONSTRAINT ID_key PRIMARY KEY (ID), --ID
+	name varchar(255) NOT NULL,
+	specialty int, --специальность (ИСИТ ИВТ ПИ )
+	--FOREIGN KEY (specialty) REFERENCES Specialties(ID), --ID_Группы
+	CONSTRAINT FK_specialty FOREIGN KEY (specialty)
+					REFERENCES Specialties(ID),
+	curator varchar(6) NOT NULL  --куратор табельный номер
+);
+
+CREATE TABLE Students 
+(
+	grade_book_number varchar(11),
+	CONSTRAINT Student_id PRIMARY KEY (grade_book_number), --номер зачетной книжки
+	surname varchar(255), --фамилия
+	name varchar(255), --имя
+	first_name varchar(255), --отчество
+	ID_Group int,
+	CONSTRAINT Group_key FOREIGN KEY (ID_Group) REFERENCES Groups(ID), --ID_Группы
+	year_of_entry date NOT NULL ---год поступления
+);
+
+ALTER TABLE Groups ADD 	
+					warden varchar(11), --староста  (номер зачетной книжки) временно может не быть старосты
+					--FOREIGN KEY (warden) REFERENCES Students(grade_book_number),
+					CONSTRAINT FK_TempSales_SalesReason FOREIGN KEY (warden)
+					REFERENCES Students(grade_book_number);
+
+CREATE TABLE Teachers 
+(
+	talismanic_number varchar(6) PRIMARY KEY,  --куратор табельный номер
+	surname varchar(255), --фамилия
+	name varchar(255), --имя
+	first_name varchar(255), --отчество
+	degree varchar(255),  --ученая степень
+	scientific_status varchar(255), --ученое звание
+	department varchar(255) --кафедра
+);
+
+CREATE TABLE Disciplines 
+(
+    ID int IDENTITY(1,1) PRIMARY KEY,
+	name varchar(255) NOT NULL, --название
+	specialty varchar(255) NOT NULL, --специальность
+	semester int NOT NULL, --семестр
+	volume_in_hours int NOT NULL, --объем (в часах)
+	reporting varchar(255) check(reporting = 'экзамен' or reporting = 'зачет' or reporting = 'курсовая' or reporting = 'контрольная' ) --отчетность (экзамен/зачет/курсовая/контрольная)
+);
+
+CREATE TABLE Research --Изучение
+(
+    ID int IDENTITY(1,1) PRIMARY KEY,
+	grade_book_number varchar(11),
+	FOREIGN KEY (grade_book_number) REFERENCES Students(grade_book_number), --номер зачетной книжки студента grade_book_number
+	ID_Discipline int,
+	FOREIGN KEY (ID_Discipline) REFERENCES Disciplines(ID),					--ID_Дисциплины 
+	handover_date date,														--дата сдачи
+	score int																--оценка
+);
+
+CREATE TABLE Teaching 
+(
+    ID int IDENTITY(1,1) PRIMARY KEY,
+	ID_Discipline int,
+	FOREIGN KEY (ID_Discipline) REFERENCES Disciplines(ID),
+	talismanic_number varchar(6), --табельный номер
+	FOREIGN KEY (talismanic_number) REFERENCES 	Teachers(talismanic_number)
+
+);

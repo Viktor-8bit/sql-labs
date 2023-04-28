@@ -1,0 +1,1 @@
+SELECT  COUNT(ID) AS 'Количество сделок' FROM [Deal]

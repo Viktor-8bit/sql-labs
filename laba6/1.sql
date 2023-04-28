@@ -1,0 +1,1 @@
+SELECT Product.Name FROM Store, Product WHERE Store.Quantity = (SELECT MAX(Quantity) FROM Store) and Product.ID = ID_Product;

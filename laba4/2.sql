@@ -1,0 +1,1 @@
+SELECT  ROUND( AVG( CONVERT(real, Quantity) ), 2, 1 ) FROM Store
