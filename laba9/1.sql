@@ -3,17 +3,18 @@
 
 
 --DROP DATABASE Decanat;
---CREATE DATABASE Decanat;
+
+
 
 CREATE TABLE Specialties 
 (
     ID int IDENTITY(1,1) PRIMARY KEY, --ID
-	specialty_code varchar(255)  NOT NULL, --шифр (прим. 09.03.02)
-	name varchar(255) NOT NULL,			--наименование
-	form_of_learning varchar(255) check(form_of_learning = 'очная' or form_of_learning = 'заочная' or form_of_learning = 'очно заочная' ) NOT NULL, --форма обучения
-	lvl varchar(255) check(lvl = 'бакалавриат' or lvl = 'специалитет' or lvl = 'магистратура' or lvl = 'аспирантура' ) NOT NULL, --уровень бакалавриат/специалитет/магистратура/аспирантура
-	duration_of_training int NOT NULL, --продолжительность обучения (в семестрах)
-	descript varchar(255) NOT NULL --описание
+	specialty_code varchar(255)  NOT NULL, --С€РёС„СЂ (РїСЂРёРј. 09.03.02)
+	name varchar(255) NOT NULL,			--РЅР°РёРјРµРЅРѕРІР°РЅРёРµ
+	form_of_learning varchar(255) check(form_of_learning = 'РѕС‡РЅР°СЏ' or form_of_learning = 'Р·Р°РѕС‡РЅР°СЏ' or form_of_learning = 'РѕС‡РЅРѕ Р·Р°РѕС‡РЅР°СЏ' ) NOT NULL, --С„РѕСЂРјР° РѕР±СѓС‡РµРЅРёСЏ
+	lvl varchar(255) check(lvl = 'Р±Р°РєР°Р»Р°РІСЂРёР°С‚' or lvl = 'СЃРїРµС†РёР°Р»РёС‚РµС‚' or lvl = 'РјР°РіРёСЃС‚СЂР°С‚СѓСЂР°' or lvl = 'Р°СЃРїРёСЂР°РЅС‚СѓСЂР°' ) NOT NULL, --СѓСЂРѕРІРµРЅСЊ Р±Р°РєР°Р»Р°РІСЂРёР°С‚/СЃРїРµС†РёР°Р»РёС‚РµС‚/РјР°РіРёСЃС‚СЂР°С‚СѓСЂР°/Р°СЃРїРёСЂР°РЅС‚СѓСЂР°
+	duration_of_training int NOT NULL, --РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ РѕР±СѓС‡РµРЅРёСЏ (РІ СЃРµРјРµСЃС‚СЂР°С…)
+	descript varchar(255) NOT NULL --РѕРїРёСЃР°РЅРёРµ
 );
 
 CREATE TABLE Groups
@@ -21,61 +22,61 @@ CREATE TABLE Groups
 	ID int IDENTITY(1,1),
     CONSTRAINT ID_key PRIMARY KEY (ID), --ID
 	name varchar(255) NOT NULL,
-	specialty int, --специальность (ИСИТ ИВТ ПИ )
-	--FOREIGN KEY (specialty) REFERENCES Specialties(ID), --ID_Группы
+	specialty int, --СЃРїРµС†РёР°Р»СЊРЅРѕСЃС‚СЊ (РРЎРРў РР’Рў РџР )
+	--FOREIGN KEY (specialty) REFERENCES Specialties(ID), --ID_Р“СЂСѓРїРїС‹
 	CONSTRAINT FK_specialty FOREIGN KEY (specialty)
 					REFERENCES Specialties(ID),
-	curator varchar(6) NOT NULL  --куратор табельный номер
+	curator varchar(6)  --РєСѓСЂР°С‚РѕСЂ С‚Р°Р±РµР»СЊРЅС‹Р№ РЅРѕРјРµСЂ
 );
 
 CREATE TABLE Students 
 (
 	grade_book_number varchar(11),
-	CONSTRAINT Student_id PRIMARY KEY (grade_book_number), --номер зачетной книжки
-	surname varchar(255), --фамилия
-	name varchar(255), --имя
-	first_name varchar(255), --отчество
+	CONSTRAINT Student_id PRIMARY KEY (grade_book_number), --РЅРѕРјРµСЂ Р·Р°С‡РµС‚РЅРѕР№ РєРЅРёР¶РєРё
+	surname varchar(255), --С„Р°РјРёР»РёСЏ
+	name varchar(255), --РёРјСЏ
+	first_name varchar(255), --РѕС‚С‡РµСЃС‚РІРѕ
 	ID_Group int,
-	CONSTRAINT Group_key FOREIGN KEY (ID_Group) REFERENCES Groups(ID), --ID_Группы
-	year_of_entry date NOT NULL ---год поступления
+	CONSTRAINT Group_key FOREIGN KEY (ID_Group) REFERENCES Groups(ID), --ID_Р“СЂСѓРїРїС‹
+	year_of_entry date NOT NULL ---РіРѕРґ РїРѕСЃС‚СѓРїР»РµРЅРёСЏ
 );
 
 ALTER TABLE Groups ADD 	
-					warden varchar(11), --староста  (номер зачетной книжки) временно может не быть старосты
+					warden varchar(11), --СЃС‚Р°СЂРѕСЃС‚Р°  (РЅРѕРјРµСЂ Р·Р°С‡РµС‚РЅРѕР№ РєРЅРёР¶РєРё) РІСЂРµРјРµРЅРЅРѕ РјРѕР¶РµС‚ РЅРµ Р±С‹С‚СЊ СЃС‚Р°СЂРѕСЃС‚С‹
 					--FOREIGN KEY (warden) REFERENCES Students(grade_book_number),
 					CONSTRAINT FK_TempSales_SalesReason FOREIGN KEY (warden)
 					REFERENCES Students(grade_book_number);
 
 CREATE TABLE Teachers 
 (
-	talismanic_number varchar(6) PRIMARY KEY,  --куратор табельный номер
-	surname varchar(255), --фамилия
-	name varchar(255), --имя
-	first_name varchar(255), --отчество
-	degree varchar(255),  --ученая степень
-	scientific_status varchar(255), --ученое звание
-	department varchar(255) --кафедра
+	talismanic_number varchar(6) PRIMARY KEY,  --РєСѓСЂР°С‚РѕСЂ С‚Р°Р±РµР»СЊРЅС‹Р№ РЅРѕРјРµСЂ
+	surname varchar(255), --С„Р°РјРёР»РёСЏ
+	name varchar(255), --РёРјСЏ
+	first_name varchar(255), --РѕС‚С‡РµСЃС‚РІРѕ
+	degree varchar(255),  --СѓС‡РµРЅР°СЏ СЃС‚РµРїРµРЅСЊ
+	scientific_status varchar(255), --СѓС‡РµРЅРѕРµ Р·РІР°РЅРёРµ
+	department varchar(255) --РєР°С„РµРґСЂР°
 );
 
 CREATE TABLE Disciplines 
 (
     ID int IDENTITY(1,1) PRIMARY KEY,
-	name varchar(255) NOT NULL, --название
-	specialty varchar(255) NOT NULL, --специальность
-	semester int NOT NULL, --семестр
-	volume_in_hours int NOT NULL, --объем (в часах)
-	reporting varchar(255) check(reporting = 'экзамен' or reporting = 'зачет' or reporting = 'курсовая' or reporting = 'контрольная' ) --отчетность (экзамен/зачет/курсовая/контрольная)
+	name varchar(255) NOT NULL, --РЅР°Р·РІР°РЅРёРµ
+	specialty varchar(255) NOT NULL, --СЃРїРµС†РёР°Р»СЊРЅРѕСЃС‚СЊ
+	semester int NOT NULL, --СЃРµРјРµСЃС‚СЂ
+	volume_in_hours int NOT NULL, --РѕР±СЉРµРј (РІ С‡Р°СЃР°С…)
+	reporting varchar(255) check(reporting = 'СЌРєР·Р°РјРµРЅ' or reporting = 'Р·Р°С‡РµС‚' or reporting = 'РєСѓСЂСЃРѕРІР°СЏ' or reporting = 'РєРѕРЅС‚СЂРѕР»СЊРЅР°СЏ' ) --РѕС‚С‡РµС‚РЅРѕСЃС‚СЊ (СЌРєР·Р°РјРµРЅ/Р·Р°С‡РµС‚/РєСѓСЂСЃРѕРІР°СЏ/РєРѕРЅС‚СЂРѕР»СЊРЅР°СЏ)
 );
 
-CREATE TABLE Research --Изучение
+CREATE TABLE Research --РР·СѓС‡РµРЅРёРµ
 (
     ID int IDENTITY(1,1) PRIMARY KEY,
 	grade_book_number varchar(11),
-	FOREIGN KEY (grade_book_number) REFERENCES Students(grade_book_number), --номер зачетной книжки студента grade_book_number
+	FOREIGN KEY (grade_book_number) REFERENCES Students(grade_book_number), --РЅРѕРјРµСЂ Р·Р°С‡РµС‚РЅРѕР№ РєРЅРёР¶РєРё СЃС‚СѓРґРµРЅС‚Р° grade_book_number
 	ID_Discipline int,
-	FOREIGN KEY (ID_Discipline) REFERENCES Disciplines(ID),					--ID_Дисциплины 
-	handover_date date,														--дата сдачи
-	score int																--оценка
+	FOREIGN KEY (ID_Discipline) REFERENCES Disciplines(ID),					--ID_Р”РёСЃС†РёРїР»РёРЅС‹ 
+	handover_date date,														--РґР°С‚Р° СЃРґР°С‡Рё
+	score int																--РѕС†РµРЅРєР°
 );
 
 CREATE TABLE Teaching 
@@ -83,7 +84,7 @@ CREATE TABLE Teaching
     ID int IDENTITY(1,1) PRIMARY KEY,
 	ID_Discipline int,
 	FOREIGN KEY (ID_Discipline) REFERENCES Disciplines(ID),
-	talismanic_number varchar(6), --табельный номер
+	talismanic_number varchar(6), --С‚Р°Р±РµР»СЊРЅС‹Р№ РЅРѕРјРµСЂ
 	FOREIGN KEY (talismanic_number) REFERENCES 	Teachers(talismanic_number)
 
 );
