@@ -441,3 +441,11 @@ UPDATE Research
 WHERE 
 (SELECT reporting FROM Disciplines WHERE ID = ID_Discipline)
  = 'зачет';
+
+
+
+UPDATE Research 
+    SET score = 5 
+WHERE
+(SELECT reporting FROM Disciplines WHERE ID = ID_Discipline)
+ = 'экзамен' AND grade_book_number IN ('10000000015', '10000000016', '10000000020', '10000000001');
