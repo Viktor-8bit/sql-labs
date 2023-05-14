@@ -1,0 +1,7 @@
+
+
+
+
+
+
+SELECT * FROM dbo.TripInfo;
